@@ -42,6 +42,7 @@ class ImgDownloader:
             self.logger.warn(e)
         try:
             Image.open(fn)
+            self.logger.info("Downloaded image id: {0}; url[{1}]".format(base_fn, url))
         except IOError as e:
             print "b"
             self.logger.warn(e)
@@ -50,10 +51,12 @@ class ImgDownloader:
         return 0
 
     def remove_img(self, idx):
+        url = self._img_url_db.loc[idx, "url"]
         base_fn = self._img_url_db.loc[idx, "id"]
         fn = os.path.join("tmp", base_fn)
         try:
             os.remove(fn)
+            self.logger.info("Removed image id: {0}; url[{1}]".format(base_fn, url))
         except Exception, e:
             print "c"
             self.logger.warn(e)
@@ -68,7 +71,8 @@ class ImgDownloader:
 
 def main():
     img_downloader = ImgDownloader()
-    img_downloader.download_img(0)
+    img_downloader.download_batch(0, 5)
+    img_downloader.remove_img(1)
 
 if __name__=="__main__":
     main()
